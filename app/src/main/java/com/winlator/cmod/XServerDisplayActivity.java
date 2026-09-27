@@ -841,12 +841,12 @@ public class XServerDisplayActivity extends AppCompatActivity {
         super.onResume();
 
         if (gyroPointerController != null) {
-    gyroPointerController.start();
+            gyroPointerController.start();
 
-    if (gyroEnabled) {
-        gyroPointerController.calibrate();
-    }
-}
+            if (gyroEnabled) {
+                gyroPointerController.calibrate();
+            }
+        }
 
         if (environment != null) {
             xServerView.onResume();
@@ -863,6 +863,10 @@ public class XServerDisplayActivity extends AppCompatActivity {
         if (taskManagerSidebar != null) taskManagerSidebar.stop();
         super.onPause();
 
+        if (gyroPointerController != null) {
+            gyroPointerController.stop();
+        }
+
         if (!isInPictureInPictureMode()) {
             if (environment != null) {
                 environment.onPause();
@@ -874,10 +878,7 @@ public class XServerDisplayActivity extends AppCompatActivity {
 
         savePlaytimeData();
         handler.removeCallbacks(savePlaytimeRunnable);
-
-        if (gyroPointerController != null) {
-    gyroPointerController.stop();
-}
+    }
 
     private void enterPipMode() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return;
