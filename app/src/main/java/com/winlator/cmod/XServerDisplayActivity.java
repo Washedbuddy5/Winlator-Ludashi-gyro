@@ -116,7 +116,6 @@ import com.winlator.cmod.xenvironment.components.SysVSharedMemoryComponent;
 import com.winlator.cmod.xenvironment.components.XServerComponent;
 import com.winlator.cmod.xserver.Drawable;
 import com.winlator.cmod.xserver.Pointer;
-import com.winlator.cmod.xserver.MouseEventFlags;
 import com.winlator.cmod.xserver.Property;
 import com.winlator.cmod.xserver.ScreenInfo;
 import com.winlator.cmod.xserver.Window;
