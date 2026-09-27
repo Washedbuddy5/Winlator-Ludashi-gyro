@@ -286,37 +286,6 @@ public class XServerDisplayActivity extends AppCompatActivity {
     }
 
 
-    private void setupGyro() {
-    if (gyroPointerController != null) return;
-
-    gyroPointerController = new GyroPointerController(this, (dx, dy) -> {
-        if (xServer == null || winHandler == null) return;
-
-        gyroResidualX += dx;
-        gyroResidualY += dy;
-
-        int ix = (int) gyroResidualX;
-        int iy = (int) gyroResidualY;
-
-        if (ix == 0 && iy == 0) return;
-
-        gyroResidualX -= ix;
-        gyroResidualY -= iy;
-
-        if (xServer.isRelativeMouseMovement()) {
-            winHandler.mouseEvent(MouseEventFlags.MOVE, ix, iy, 0);
-        } else {
-            xServer.injectPointerMoveDelta(ix, iy);
-        }
-    });
-
-    gyroPointerController.setSensitivity(12.0f);
-    gyroPointerController.setDeadzoneDegrees(0.35f);
-    gyroPointerController.setInvertX(false);
-    gyroPointerController.setInvertY(false);
-    gyroPointerController.setEnabled(gyroEnabled);
-    }
-
     private float pickHighestRefreshRate() {
         android.view.Display display = getWindowManager().getDefaultDisplay();
         android.view.Display.Mode[] modes = display.getSupportedModes();
@@ -1263,6 +1232,37 @@ public class XServerDisplayActivity extends AppCompatActivity {
     private String getSelectedSurfaceFormat() {
         if (shortcut != null) return shortcut.getSurfaceFormat();
         return container != null ? container.getSurfaceFormat() : "rgba8";
+    }
+
+    private void setupGyro() {
+    if (gyroPointerController != null) return;
+
+    gyroPointerController = new GyroPointerController(this, (dx, dy) -> {
+        if (xServer == null || winHandler == null) return;
+
+        gyroResidualX += dx;
+        gyroResidualY += dy;
+
+        int ix = (int) gyroResidualX;
+        int iy = (int) gyroResidualY;
+
+        if (ix == 0 && iy == 0) return;
+
+        gyroResidualX -= ix;
+        gyroResidualY -= iy;
+
+        if (xServer.isRelativeMouseMovement()) {
+            winHandler.mouseEvent(MouseEventFlags.MOVE, ix, iy, 0);
+        } else {
+            xServer.injectPointerMoveDelta(ix, iy);
+        }
+    });
+
+    gyroPointerController.setSensitivity(12.0f);
+    gyroPointerController.setDeadzoneDegrees(0.35f);
+    gyroPointerController.setInvertX(false);
+    gyroPointerController.setInvertY(false);
+    gyroPointerController.setEnabled(gyroEnabled);
     }
 
     private void setupUI() {
