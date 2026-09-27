@@ -88,6 +88,7 @@ import com.winlator.cmod.core.WinlatorLogcatLogger;
 import com.winlator.cmod.inputcontrols.ControlsProfile;
 import com.winlator.cmod.inputcontrols.ExternalController;
 import com.winlator.cmod.inputcontrols.InputControlsManager;
+import com.winlator.cmod.inputcontrols.GyroPointerController;
 import com.winlator.cmod.math.Mathf;
 import com.winlator.cmod.math.XForm;
 import com.winlator.cmod.midi.MidiHandler;
@@ -115,6 +116,7 @@ import com.winlator.cmod.xenvironment.components.SysVSharedMemoryComponent;
 import com.winlator.cmod.xenvironment.components.XServerComponent;
 import com.winlator.cmod.xserver.Drawable;
 import com.winlator.cmod.xserver.Pointer;
+import com.winlator.cmod.xserver.MouseEventFlags;
 import com.winlator.cmod.xserver.Property;
 import com.winlator.cmod.xserver.ScreenInfo;
 import com.winlator.cmod.xserver.Window;
@@ -156,6 +158,10 @@ public class XServerDisplayActivity extends AppCompatActivity {
     private TouchpadView touchpadView;
     private XEnvironment environment;
     private DrawerLayout drawerLayout;
+    private GyroPointerController gyroPointerController;
+    private boolean gyroEnabled = true;
+    private float gyroResidualX = 0f;
+    private float gyroResidualY = 0f;
     private ContainerManager containerManager;
     protected Container container;
     private XServer xServer;
@@ -277,6 +283,38 @@ public class XServerDisplayActivity extends AppCompatActivity {
         randr.setRefreshRates(rates, activeRate);
         Log.d("XServerDisplayActivity", "RandR advertising refresh rates "
                 + java.util.Arrays.toString(rates) + ", active=" + activeRate);
+    }
+
+
+    private void setupGyro() {
+    if (gyroPointerController != null) return;
+
+    gyroPointerController = new GyroPointerController(this, (dx, dy) -> {
+        if (xServer == null || winHandler == null) return;
+
+        gyroResidualX += dx;
+        gyroResidualY += dy;
+
+        int ix = (int) gyroResidualX;
+        int iy = (int) gyroResidualY;
+
+        if (ix == 0 && iy == 0) return;
+
+        gyroResidualX -= ix;
+        gyroResidualY -= iy;
+
+        if (xServer.isRelativeMouseMovement()) {
+            winHandler.mouseEvent(MouseEventFlags.MOVE, ix, iy, 0);
+        } else {
+            xServer.injectPointerMoveDelta(ix, iy);
+        }
+    });
+
+    gyroPointerController.setSensitivity(12.0f);
+    gyroPointerController.setDeadzoneDegrees(0.35f);
+    gyroPointerController.setInvertX(false);
+    gyroPointerController.setInvertY(false);
+    gyroPointerController.setEnabled(gyroEnabled);
     }
 
     private float pickHighestRefreshRate() {
