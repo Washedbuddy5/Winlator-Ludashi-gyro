@@ -135,7 +135,7 @@ public class GyroPointerController implements SensorEventListener {
             return;
         }
 
-        float yawDelta = wrapAngle(orientation[0] - lastOrientation[0]);
+        float yawDelta = wrapAngle(orientation[2] - lastOrientation[2]);
         float pitchDelta = wrapAngle(orientation[1] - lastOrientation[1]);
 
         System.arraycopy(orientation, 0, lastOrientation, 0, 3);
