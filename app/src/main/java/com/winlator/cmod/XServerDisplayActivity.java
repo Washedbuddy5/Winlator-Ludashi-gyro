@@ -1259,7 +1259,7 @@ public class XServerDisplayActivity extends AppCompatActivity {
 
     gyroPointerController.setSensitivity(30.0f);
     gyroPointerController.setDeadzoneDegrees(0);
-    gyroPointerController.setInvertX(false);
+    gyroPointerController.setInvertX(true);
     gyroPointerController.setInvertY(true);
     gyroPointerController.setEnabled(gyroEnabled);
     }
